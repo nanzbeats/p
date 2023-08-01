@@ -1,0 +1,37 @@
+name: Check-in
+on:
+  # schedule every weekdays at 08:00 (UTC+7) / 03:00 (UTC)
+  # in the past, "0 3 * * 1-5" runs at around 10:00 (UTC+7), so I changed it to "0 1 * * 1-5" to run at 08:00 (UTC+7)
+  # already changed, but still late check-in at around (09:22 UTC+7)
+
+  # Still late check-in https://github.com/helmisatria/talenta-attendance-automation/issues/5,
+  # Need to change the cron to "0 0 * * 1-5" to run at around 08:00 (UTC+7)
+
+  # changed to "20 0 * * 1-5" from "0 0 * * 1-5" expecting will run at around 08:20 (previously around 08:00)
+  schedule:
+    - cron: "10 0 * * 1-5"
+  workflow_dispatch:
+
+jobs:
+  check-in:
+    env:
+      ACCOUNT_EMAIL: ${{ vars.ACCOUNT_EMAIL }}
+      ACCOUNT_PASSWORD: ${{ secrets.ACCOUNT_PASSWORD }}
+      GEO_LATITUDE: ${{ secrets.GEO_LATITUDE }}
+      GEO_LONGITUDE: ${{ secrets.GEO_LONGITUDE }}
+      CHECK_TYPE: "CHECK_IN"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6.32.9
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "pnpm"
+      - name: Install dependencies
+        run: npm install --frozen-lockfile
+      - name: Checking In
+        run: node index.js
