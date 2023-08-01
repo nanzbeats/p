@@ -165,11 +165,16 @@ const main = async () => {
     await browser.close();
     return;
   }
+
+  const desc = "Check In";
+  if (process.env.CHECK_TYPE === "CHECK_OUT") { 
+    desc = "Check Out";
+  }
   
   const config = prepForm({
     long: process.env.GEO_LONGITUDE,
     lat: process.env.GEO_LATITUDE,
-    desc: "",
+    desc: desc,
     cookies: "PHPSESSID="+obj.value,
     isCheckOut: process.env.CHECK_TYPE === "CHECK_IN" ? false : true
   });
