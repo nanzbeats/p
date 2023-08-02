@@ -158,7 +158,7 @@ const main = async () => {
   const isAlreadyCheckin = columnCheckCheckInTime.trim() !== "-";
 
   // - = not checkout yet
-  const isAlreadyCheckout = columnCheckDayOff.trim() !== "-";
+  const isAlreadyCheckout = columnCheckCheckOutTime.trim() !== "-";
 
   const shouldSkipCheckInOut = isTodayHoliday || isTodayOnLeave;
 
