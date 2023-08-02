@@ -204,7 +204,7 @@ const main = async () => {
     return;
   }
 
-  const desc = "Check In";
+  let desc = "Check In";
   if (process.env.CHECK_TYPE === "CHECK_OUT") { 
     desc = "Check Out";
   }
