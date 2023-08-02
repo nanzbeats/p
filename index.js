@@ -172,7 +172,7 @@ const main = async () => {
     return;
   }
 
-  if (isAlreadyCheckin) {
+  if (isAlreadyCheckin && process.env.CHECK_TYPE === "CHECK_IN") {
     const consoleText = "You are already Check In, skipping check in...";
     console.log(consoleText);
 
@@ -180,7 +180,7 @@ const main = async () => {
     return;
   }
 
-  if (isAlreadyCheckout) {
+  if (isAlreadyCheckout && process.env.CHECK_TYPE === "CHECK_OUT") {
     const consoleText = "You are already Check Out, skipping check out...";
     console.log(consoleText);
 
