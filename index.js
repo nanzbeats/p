@@ -132,11 +132,33 @@ const main = async () => {
       "Check column 7"
     );
 
+  const columnCheckCheckInTime = await rowToday
+    .locator("td:nth-child(5)")
+    .innerText();
+
+    console.log(
+      "Check column 5"
+    );
+
+  const columnCheckCheckOutTime = await rowToday
+    .locator("td:nth-child(6)")
+    .innerText();
+
+    console.log(
+      "Check column 6"
+    );
+
   // N = not dayoff/holiday
   const isTodayHoliday = columnCheckDayOff.trim() !== "N";
 
   // CT = cuti
   const isTodayOnLeave = columnCheckOnLeave.trim() === "CT";
+
+  // N = not dayoff/holiday
+  const isAlreadyCheckin = columnCheckCheckInTime.trim() !== "-";
+
+  // N = not dayoff/holiday
+  const isAlreadyCheckout = columnCheckDayOff.trim() !== "-";
 
   const shouldSkipCheckInOut = isTodayHoliday || isTodayOnLeave;
 
@@ -144,6 +166,22 @@ const main = async () => {
     const consoleText = isTodayOnLeave
       ? "You are on leave (cuti) today, skipping check in/out..."
       : "You are on holiday today, skipping check in/out...";
+    console.log(consoleText);
+
+    await browser.close();
+    return;
+  }
+
+  if (isAlreadyCheckin) {
+    const consoleText = "You are already Check In, skipping check in...";
+    console.log(consoleText);
+
+    await browser.close();
+    return;
+  }
+
+  if (isAlreadyCheckout) {
+    const consoleText = "You are already Check Out, skipping check out...";
     console.log(consoleText);
 
     await browser.close();
