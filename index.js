@@ -154,10 +154,10 @@ const main = async () => {
   // CT = cuti
   const isTodayOnLeave = columnCheckOnLeave.trim() === "CT";
 
-  // N = not dayoff/holiday
+  // - = not checkin yet
   const isAlreadyCheckin = columnCheckCheckInTime.trim() !== "-";
 
-  // N = not dayoff/holiday
+  // - = not checkout yet
   const isAlreadyCheckout = columnCheckDayOff.trim() !== "-";
 
   const shouldSkipCheckInOut = isTodayHoliday || isTodayOnLeave;
