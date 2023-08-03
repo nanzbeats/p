@@ -217,11 +217,9 @@ const main = async () => {
     isCheckOut: process.env.CHECK_TYPE === "CHECK_IN" ? false : true
   });
 
-  console.log(config)
+  const data = await attendancePost(config)
 
-  const data = attendancePost(config)
-
-  console.log("Success "+process.env.CHECK_TYPE+" Response: ", data)
+  console.log("Success "+process.env.CHECK_TYPE)
   
   await browser.close();
 };
