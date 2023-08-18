@@ -153,6 +153,7 @@ const main = async () => {
 
   // CT = cuti
   const isTodayOnLeave = columnCheckOnLeave.trim() === "CT";
+  const isTodayOnLeaveNew = columnCheckOnLeave.trim() === "CTA";
 
   // - = not checkin yet
   const isAlreadyCheckin = columnCheckCheckInTime.trim() !== "-";
@@ -160,10 +161,10 @@ const main = async () => {
   // - = not checkout yet
   const isAlreadyCheckout = columnCheckCheckOutTime.trim() !== "-";
 
-  const shouldSkipCheckInOut = isTodayHoliday || isTodayOnLeave;
+  const shouldSkipCheckInOut = isTodayHoliday || isTodayOnLeave || isTodayOnLeaveNew;
 
   if (shouldSkipCheckInOut) {
-    const consoleText = isTodayOnLeave
+    const consoleText = (isTodayOnLeave || isTodayOnLeaveNew)
       ? "You are on leave (cuti) today, skipping check in/out..."
       : "You are on holiday today, skipping check in/out...";
     console.log(consoleText);
