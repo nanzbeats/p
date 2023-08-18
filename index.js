@@ -154,6 +154,8 @@ const main = async () => {
   // CT = cuti
   const isTodayOnLeave = columnCheckOnLeave.trim() === "CT";
   const isTodayOnLeaveNew = columnCheckOnLeave.trim() === "CTA";
+  console.log(isTodayOnLeaveNew)
+  console.log(columnCheckOnLeave.trim())
 
   // - = not checkin yet
   const isAlreadyCheckin = columnCheckCheckInTime.trim() !== "-";
