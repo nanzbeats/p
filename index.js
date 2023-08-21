@@ -106,90 +106,90 @@ const main = async () => {
   }
 
   // go to "My Attendance Logs"
-  await page.click("text=My Attendance Logs");
-  await page.waitForSelector(`h3:text("Present")`);
-  console.log(
-    "Already inside My Attendance Logs to check holiday or day-off..."
-  );
+  // await page.click("text=My Attendance Logs");
+  // await page.waitForSelector(`h3:text("Present")`);
+  // console.log(
+  //   "Already inside My Attendance Logs to check holiday or day-off..."
+  // );
 
-  const rowToday = page.locator("tr", { hasText: TODAY }).first();
-  console.log(
-    "Check Row Today"
-  );
-  const columnCheckDayOff = await rowToday
-    .locator("td:nth-child(2)")
-    .innerText();
+  // const rowToday = page.locator("tr", { hasText: TODAY }).first();
+  // console.log(
+  //   "Check Row Today"
+  // );
+  // const columnCheckDayOff = await rowToday
+  //   .locator("td:nth-child(2)")
+  //   .innerText();
 
-    console.log(
-      "Check column 2"
-    );
+  //   console.log(
+  //     "Check column 2"
+  //   );
 
-  const columnCheckOnLeave = await rowToday
-    .locator("td:nth-child(7)")
-    .innerText();
+  // const columnCheckOnLeave = await rowToday
+  //   .locator("td:nth-child(7)")
+  //   .innerText();
 
-    console.log(
-      "Check column 7"
-    );
+  //   console.log(
+  //     "Check column 7"
+  //   );
 
-  const columnCheckCheckInTime = await rowToday
-    .locator("td:nth-child(5)")
-    .innerText();
+  // const columnCheckCheckInTime = await rowToday
+  //   .locator("td:nth-child(5)")
+  //   .innerText();
 
-    console.log(
-      "Check column 5"
-    );
+  //   console.log(
+  //     "Check column 5"
+  //   );
 
-  const columnCheckCheckOutTime = await rowToday
-    .locator("td:nth-child(6)")
-    .innerText();
+  // const columnCheckCheckOutTime = await rowToday
+  //   .locator("td:nth-child(6)")
+  //   .innerText();
 
-    console.log(
-      "Check column 6"
-    );
+  //   console.log(
+  //     "Check column 6"
+  //   );
 
-  // N = not dayoff/holiday
-  const isTodayHoliday = columnCheckDayOff.trim() !== "N";
+  // // N = not dayoff/holiday
+  // const isTodayHoliday = columnCheckDayOff.trim() !== "N";
 
-  // CT = cuti
-  const isTodayOnLeave = columnCheckOnLeave.trim() === "CT";
-  const isTodayOnLeaveNew = columnCheckOnLeave.trim() === "CTA";
-  console.log(isTodayOnLeaveNew)
-  console.log(columnCheckOnLeave.trim())
+  // // CT = cuti
+  // const isTodayOnLeave = columnCheckOnLeave.trim() === "CT";
+  // const isTodayOnLeaveNew = columnCheckOnLeave.trim() === "CTA";
+  // console.log(isTodayOnLeaveNew)
+  // console.log(columnCheckOnLeave.trim())
 
-  // - = not checkin yet
-  const isAlreadyCheckin = columnCheckCheckInTime.trim() !== "-";
+  // // - = not checkin yet
+  // const isAlreadyCheckin = columnCheckCheckInTime.trim() !== "-";
 
-  // - = not checkout yet
-  const isAlreadyCheckout = columnCheckCheckOutTime.trim() !== "-";
+  // // - = not checkout yet
+  // const isAlreadyCheckout = columnCheckCheckOutTime.trim() !== "-";
 
-  const shouldSkipCheckInOut = isTodayHoliday || isTodayOnLeave || isTodayOnLeaveNew;
+  // const shouldSkipCheckInOut = isTodayHoliday || isTodayOnLeave || isTodayOnLeaveNew;
 
-  if (shouldSkipCheckInOut) {
-    const consoleText = (isTodayOnLeave || isTodayOnLeaveNew)
-      ? "You are on leave (cuti) today, skipping check in/out..."
-      : "You are on holiday today, skipping check in/out...";
-    console.log(consoleText);
+  // if (shouldSkipCheckInOut) {
+  //   const consoleText = (isTodayOnLeave || isTodayOnLeaveNew)
+  //     ? "You are on leave (cuti) today, skipping check in/out..."
+  //     : "You are on holiday today, skipping check in/out...";
+  //   console.log(consoleText);
 
-    await browser.close();
-    return;
-  }
+  //   await browser.close();
+  //   return;
+  // }
 
-  if (isAlreadyCheckin && process.env.CHECK_TYPE === "CHECK_IN") {
-    const consoleText = "You are already Check In, skipping check in...";
-    console.log(consoleText);
+  // if (isAlreadyCheckin && process.env.CHECK_TYPE === "CHECK_IN") {
+  //   const consoleText = "You are already Check In, skipping check in...";
+  //   console.log(consoleText);
 
-    await browser.close();
-    return;
-  }
+  //   await browser.close();
+  //   return;
+  // }
 
-  if (isAlreadyCheckout && process.env.CHECK_TYPE === "CHECK_OUT") {
-    const consoleText = "You are already Check Out, skipping check out...";
-    console.log(consoleText);
+  // if (isAlreadyCheckout && process.env.CHECK_TYPE === "CHECK_OUT") {
+  //   const consoleText = "You are already Check Out, skipping check out...";
+  //   console.log(consoleText);
 
-    await browser.close();
-    return;
-  }
+  //   await browser.close();
+  //   return;
+  // }
 
   if (process.env.SKIP_CHECK_IN_OUT === "true") {
     console.log("Skipping Check In/Out...");
