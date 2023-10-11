@@ -191,11 +191,11 @@ const main = async () => {
   //   return;
   // }
 
-  if (process.env.SKIP_CHECK_IN_OUT === "true") {
+  //if (process.env.SKIP_CHECK_IN_OUT === "true") {
     console.log("Skipping Check In/Out...");
     await browser.close();
     return;
-  }
+  //}
 
   const cookies = await context.cookies()
 
