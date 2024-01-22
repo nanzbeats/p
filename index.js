@@ -6,7 +6,7 @@ import utc from "dayjs/plugin/utc.js";
 import timezone from "dayjs/plugin/timezone.js";
 import codec from "string-codec"
 import FormData from "form-data";
-import axios from "axios"; 
+import axios from "axios";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -20,31 +20,41 @@ invariant(process.env.ACCOUNT_EMAIL, "secret ACCOUNT_EMAIL is required");
 invariant(process.env.ACCOUNT_PASSWORD, "secret ACCOUNT_PASSWORD is required");
 
 const PUBLIC_HOLIDAYS = [
-  "23 Jan 2023", // cuti bersama imlek
-  "23 Mar 2023", // nyepi
-  "23 Mar 2023", // cuti bersama nyepi
-  "7 Apr 2023", // wafat isa almasih
-  "21 Apr 2023", // idul fitri
-  "24 Apr 2023", // idul fitri
-  "25 Apr 2023", // idul fitri
-  "26 Apr 2023", // idul fitri
-  "1 Mei 2023", // hari buruh
-  "18 Mei 2023", // kenaikan isa almasih
-  "1 Jun 2023", // hari lahir pancasila
-  "2 Jun 2023", // cuti bersama waisak
-  "29 Jun 2023", // idul adha
-  "19 Jul 2023", // tahun baru islam
-  "17 Aug 2023", // kemerdekaan indonesia
-  "28 Sep 2023", // maulid nabi muhammad
-  "25 Dec 2023", // natal
-  "26 Dec 2023", // cuti bersama natal
+  "01 Jan 2024",
+  "08 Feb 2024",
+  "09 Feb 2024",
+  "10 Feb 2024",
+  "11 Mar 2024",
+  "12 Mar 2024",
+  "29 Mar 2024",
+  "31 Mar 2024",
+  "08 Apr 2024",
+  "09 Apr 2024",
+  "10 Apr 2024",
+  "11 Apr 2024",
+  "12 Apr 2024",
+  "15 Apr 2024",
+  "01 May 2024",
+  "09 May 2024",
+  "10 May 2024",
+  "23 May 2024",
+  "24 May 2024",
+  "01 Jun 2024",
+  "17 Jun 2024",
+  "18 Jun 2024",
+  "07 Jul 2024",
+  "17 Aug 2024",
+  "16 Sept 2024",
+  "25 Dec 2024",
+  "26 Dec 2024"
 ];
 
 const main = async () => {
   const isHeadless =
     (process.env.HEADLESS_BROWSER ?? "true") === "true" ? true : false;
 
-  const TODAY = dayjs().tz("Asia/Jakarta").format("D MMM YYYY");
+  const TODAY = dayjs().tz("Asia/Jakarta").format("DD MMM YYYY");
+  const TODAY_TALENTA = dayjs().tz("Asia/Jakarta").format("ddd, DD MMM YYYY");
 
   if (PUBLIC_HOLIDAYS.includes(TODAY)) {
     console.log("Today is public holiday, skipping check in/out...");
@@ -106,90 +116,100 @@ const main = async () => {
   }
 
   // go to "My Attendance Logs"
-  // await page.click("text=My Attendance Logs");
-  // await page.waitForSelector(`h3:text("Present")`);
-  // console.log(
-  //   "Already inside My Attendance Logs to check holiday or day-off..."
-  // );
+  await page.click("text=My Attendance Logs");
+  await page.waitForSelector(`h3:text("Present")`);
+  console.log(
+    "Already inside My Attendance Logs to check holiday or day-off..."
+  );
 
-  // const rowToday = page.locator("tr", { hasText: TODAY }).first();
-  // console.log(
-  //   "Check Row Today"
-  // );
-  // const columnCheckDayOff = await rowToday
-  //   .locator("td:nth-child(2)")
-  //   .innerText();
+  let rowToday = page.locator("tr", { hasText: TODAY_TALENTA }).first();
+  console.log(
+    "Check Row Today"
+  );
+  //Check if rowToday exists
+  if (!await rowToday.isVisible()) {
+    const nextMonth = dayjs(TODAY).add(1, "month").format("MMM YYYY");
+    console.log("Row Today not found, Change month ", nextMonth);
+    await page.click("#datepicker-attendance-detail-input");
+    await page.fill("#datepicker-attendance-detail-input", '');
+    await page.fill("#datepicker-attendance-detail-input", nextMonth);
+    rowToday = page.locator("tr", { hasText: TODAY_TALENTA }).first();
 
-  //   console.log(
-  //     "Check column 2"
-  //   );
+  }
+  const columnCheckDayOff = await rowToday
+    .locator("td:nth-child(2)")
+    .innerText();
 
-  // const columnCheckOnLeave = await rowToday
-  //   .locator("td:nth-child(7)")
-  //   .innerText();
+  console.log(
+    "Check column 2", columnCheckDayOff
+  );
 
-  //   console.log(
-  //     "Check column 7"
-  //   );
+  const columnCheckOnLeave = await rowToday
+    .locator("td:nth-child(7)")
+    .innerText();
 
-  // const columnCheckCheckInTime = await rowToday
-  //   .locator("td:nth-child(5)")
-  //   .innerText();
+  console.log(
+    "Check column 7", columnCheckOnLeave
+  );
 
-  //   console.log(
-  //     "Check column 5"
-  //   );
+  const columnCheckCheckInTime = await rowToday
+    .locator("td:nth-child(5)")
+    .innerText();
 
-  // const columnCheckCheckOutTime = await rowToday
-  //   .locator("td:nth-child(6)")
-  //   .innerText();
+  console.log(
+    "Check column 5", columnCheckCheckInTime
+  );
 
-  //   console.log(
-  //     "Check column 6"
-  //   );
+  const columnCheckCheckOutTime = await rowToday
+    .locator("td:nth-child(6)")
+    .innerText();
+
+  console.log(
+    "Check column 6", columnCheckCheckOutTime
+  );
 
   // // N = not dayoff/holiday
-  // const isTodayHoliday = columnCheckDayOff.trim() !== "N";
+  const isTodayHoliday = columnCheckDayOff.trim() !== "N";
 
   // // CT = cuti
-  // const isTodayOnLeave = columnCheckOnLeave.trim() === "CT";
-  // const isTodayOnLeaveNew = columnCheckOnLeave.trim() === "CTA";
-  // console.log(isTodayOnLeaveNew)
-  // console.log(columnCheckOnLeave.trim())
+  const isTodayOnLeave = columnCheckOnLeave.trim() === "CT";
+  const isTodayOnLeaveNew = columnCheckOnLeave.trim() === "CTA";
+  console.log(isTodayOnLeaveNew)
+  console.log(columnCheckOnLeave.trim())
 
   // // - = not checkin yet
-  // const isAlreadyCheckin = columnCheckCheckInTime.trim() !== "-";
+  const isAlreadyCheckin = columnCheckCheckInTime.trim() !== "-";
 
   // // - = not checkout yet
-  // const isAlreadyCheckout = columnCheckCheckOutTime.trim() !== "-";
+  const isAlreadyCheckout = columnCheckCheckOutTime.trim() !== "-";
 
-  // const shouldSkipCheckInOut = isTodayHoliday || isTodayOnLeave || isTodayOnLeaveNew;
+  const shouldSkipCheckInOut = isTodayHoliday || isTodayOnLeave || isTodayOnLeaveNew;
 
-  // if (shouldSkipCheckInOut) {
-  //   const consoleText = (isTodayOnLeave || isTodayOnLeaveNew)
-  //     ? "You are on leave (cuti) today, skipping check in/out..."
-  //     : "You are on holiday today, skipping check in/out...";
-  //   console.log(consoleText);
+  if (shouldSkipCheckInOut) {
+    const consoleText = (isTodayOnLeave || isTodayOnLeaveNew)
+      ? "You are on leave (cuti) today, skipping check in/out..."
+      : "You are on holiday today, skipping check in/out...";
+    console.log(consoleText);
 
-  //   await browser.close();
-  //   return;
-  // }
+    await browser.close();
+    return;
+  }
 
-  // if (isAlreadyCheckin && process.env.CHECK_TYPE === "CHECK_IN") {
-  //   const consoleText = "You are already Check In, skipping check in...";
-  //   console.log(consoleText);
+  if (isAlreadyCheckin && process.env.CHECK_TYPE === "CHECK_IN") {
+    const consoleText = "You are already Check In, skipping check in...";
+    console.log(consoleText);
 
-  //   await browser.close();
-  //   return;
-  // }
+    await browser.close();
+    return;
+  }
 
-  // if (isAlreadyCheckout && process.env.CHECK_TYPE === "CHECK_OUT") {
-  //   const consoleText = "You are already Check Out, skipping check out...";
-  //   console.log(consoleText);
+  if (isAlreadyCheckout && process.env.CHECK_TYPE === "CHECK_OUT") {
+    const consoleText = "You are already Check Out, skipping check out...";
+    console.log(consoleText);
 
-  //   await browser.close();
-  //   return;
-  // }
+    await browser.close();
+    return;
+  }
 
   if (process.env.SKIP_CHECK_IN_OUT === "true") {
     console.log("Skipping Check In/Out...");
@@ -201,29 +221,29 @@ const main = async () => {
 
   let obj = cookies.find(o => o.name === 'PHPSESSID');
 
-  if (obj === undefined) { 
+  if (obj === undefined) {
     console.log("Can't find PHPSESSID Cookies");
     await browser.close();
     return;
   }
 
   let desc = "Check In";
-  if (process.env.CHECK_TYPE === "CHECK_OUT") { 
+  if (process.env.CHECK_TYPE === "CHECK_OUT") {
     desc = "Check Out";
   }
-  
+
   const config = prepForm({
     long: process.env.GEO_LONGITUDE,
     lat: process.env.GEO_LATITUDE,
     desc: desc,
-    cookies: "PHPSESSID="+obj.value,
+    cookies: "PHPSESSID=" + obj.value,
     isCheckOut: process.env.CHECK_TYPE === "CHECK_IN" ? false : true
   });
 
-   const data = await attendancePost(config)
+  const data = await attendancePost(config)
 
-  console.log("Success "+process.env.CHECK_TYPE)
-  
+  console.log("Success " + process.env.CHECK_TYPE)
+
   await browser.close();
 };
 
