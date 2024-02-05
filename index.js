@@ -54,7 +54,7 @@ const main = async () => {
     (process.env.HEADLESS_BROWSER ?? "true") === "true" ? true : false;
 
   const TODAY = dayjs().tz("Asia/Jakarta").format("DD MMM YYYY");
-  const TODAY_TALENTA = dayjs().tz("Asia/Jakarta").format("ddd, DD MMM YYYY");
+  const TODAY_TALENTA = dayjs().tz("Asia/Jakarta").format("ddd, D MMM YYYY");
 
   if (PUBLIC_HOLIDAYS.includes(TODAY)) {
     console.log("Today is public holiday, skipping check in/out...");
